@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+</head>
+<body>
+    <h1>Products</h1>
+    <ul>
+        <% products.forEach(product => { %>
+            <li>
+                <a href="/products/<%= product._id %>"><%= product.name %></a>
+                - $<%= product.price %>
+                <button onclick="addToCart('<%= product._id %>')">Add to Cart</button>
+            </li>
+        <% }) %>
+    </ul>
+    <script>
+        function addToCart(productId) {
+            fetch(`/api/carts/YOUR_CART_ID/products/${productId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
