@@ -3,16 +3,19 @@ const express = require('express');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('./config/passport');
+const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 
 const productRoutes = require('./routes/productRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const userRoutes = require('./routes/userRoutes');
+const sessionRoutes = require('./routes/sessionRoutes');
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(session({
     secret: 'secret',
     resave: false,
@@ -30,6 +33,7 @@ mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTop
 
 app.use('/api/products', productRoutes);
 app.use('/api/carts', cartRoutes);
+app.use('/api/sessions', sessionRoutes);
 app.use('/', userRoutes);
 
 app.get('/products', async (req, res) => {

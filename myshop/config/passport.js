@@ -1,8 +1,9 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
-const GitHubStrategy = require('passport-github2').Strategy;
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
+const JWTStrategy = require('passport-jwt').Strategy;
+const ExtractJWT = require('passport-jwt').ExtractJwt;
 
 passport.use('local-register', new LocalStrategy({
     usernameField: 'email',
@@ -15,7 +16,13 @@ passport.use('local-register', new LocalStrategy({
             return done(null, false, { message: 'Email already exists' });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ email, password: hashedPassword });
+        const newUser = new User({
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            email,
+            age: req.body.age,
+            password: hashedPassword
+        });
         await newUser.save();
         done(null, newUser);
     } catch (error) {
@@ -42,16 +49,14 @@ passport.use('local-login', new LocalStrategy({
     }
 }));
 
-passport.use(new GitHubStrategy({
-    clientID: process.env.GITHUB_CLIENT_ID,
-    clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: process.env.GITHUB_CALLBACK_URL
-}, async (accessToken, refreshToken, profile, done) => {
+passport.use(new JWTStrategy({
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.JWT_SECRET
+}, async (jwtPayload, done) => {
     try {
-        let user = await User.findOne({ githubId: profile.id });
+        const user = await User.findById(jwtPayload.id);
         if (!user) {
-            user = new User({ githubId: profile.id, email: profile.emails[0].value });
-            await user.save();
+            return done(null, false);
         }
         done(null, user);
     } catch (error) {
