@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Register</title>
 </head>
 <body>
-    <h1>Login</h1>
-    <form action="/login" method="post">
+    <h1>Register</h1>
+    <form action="/register" method="post">
         <div>
             <label for="email">Email:</label>
             <input type="email" name="email" id="email" required>
@@ -16,9 +16,8 @@
             <label for="password">Password:</label>
             <input type="password" name="password" id="password" required>
         </div>
-        <button type="submit">Login</button>
+        <button type="submit">Register</button>
     </form>
-    <a href="/auth/github">Login with GitHub</a>
-    <a href="/register">Don't have an account? Register</a>
+    <a href="/login">Already have an account? Login</a>
 </body>
 </html>
