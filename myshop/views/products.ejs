@@ -7,6 +7,10 @@
 </head>
 <body>
     <h1>Products</h1>
+    <% if (user) { %>
+        <p>Welcome, <%= user.email %> (<%= user.role %>)</p>
+        <a href="/auth/logout">Logout</a>
+    <% } %>
     <ul>
         <% products.forEach(product => { %>
             <li>
@@ -26,3 +30,4 @@
     </script>
 </body>
 </html>
+
