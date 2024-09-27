@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+</head>
+<body>
+    <h1>Admin Panel</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% users.forEach(user => { %>
+                <tr>
+                    <td><%= user.email %></td>
+                    <td>
+                        <select onchange="changeRole('<%= user._id %>', this.value)">
+                            <option value="user" <%= user.role === 'user' ? 'selected' : '' %>>User</option>
+                            <option value="premium" <%= user.role === 'premium' ? 'selected' : '' %>>Premium</option>
+                        </select>
+                    </td>
+                    <td>
+                        <button onclick="deleteUser('<%= user._id %>')">Delete</button>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <script>
+        function changeRole(userId, role) {
+            fetch(`/api/users/premium/${userId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ role })
+            }).then(response => response.json()).then(data => console.log(data));
+        }
+
+        function deleteUser(userId) {
+            fetch(`/api/users/${userId}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => console.log(data));
+        }
+    </script>
+</body>
+</html>

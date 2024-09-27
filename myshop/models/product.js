@@ -5,8 +5,10 @@ const productSchema = new mongoose.Schema({
     price: { type: Number, required: true },
     category: { type: String, required: true },
     available: { type: Boolean, default: true },
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null }, // Referencia al creador (owner)
 });
 
 const Product = mongoose.model('Product', productSchema);
 
 module.exports = Product;
+
